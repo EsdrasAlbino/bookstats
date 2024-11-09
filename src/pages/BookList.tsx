@@ -36,6 +36,7 @@ const BookList = () => {
 
   return (
     <Container
+      maxWidth="md"
       style={{
         display: "flex",
         flexDirection: "column",
@@ -53,12 +54,26 @@ const BookList = () => {
       />
       {loading && <CircularProgress />}
 
-      {(!loading && !query) && <Typography>Insira um termo de busca</Typography>}
-
       {!loading && (
-        <div>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: "1rem",
+            width: "100%",
+          }}
+        >
           {books?.map((book) => (
-            <Card key={book.id} style={{ margin: "1rem" }}>
+            <Card
+              key={book.id}
+              style={{
+                width: "100%",
+                maxWidth: "300px", // Largura máxima para manter os cartões compactos
+                margin: "1rem",
+                boxSizing: "border-box",
+              }}
+            >
               {/* <Link to={`/books/${book.id}`}> */}
               <CardContent>
                 <Typography variant="h6">{book.title}</Typography>
