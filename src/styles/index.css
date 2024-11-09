@@ -38,6 +38,18 @@ h1 {
   color: #646cff;
 }
 
+h2 {
+  font-size: 2.4em;
+  line-height: 1.2;
+  color: #646cff;
+}
+
+p {
+  font-size: 1.6em;
+  line-height: 1.5;
+  color: #242427;
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;
