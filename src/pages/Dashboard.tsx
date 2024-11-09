@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material";
 import {
   Bar,
   BarChart,
@@ -21,7 +22,7 @@ export const Dashboard = ({ genreData, reviewTrendData }: DashboardProps) => {
       style={{ display: "flex", alignContent: "center", alignItems: "center" }}
     >
       <div>
-        <p>Distribuição de Avaliações por Gênero de Livro</p>
+        <Typography variant="caption">Distribuição de Avaliações por Gênero de Livro</Typography>
         <BarChart
           width={600}
           height={300}
@@ -38,7 +39,7 @@ export const Dashboard = ({ genreData, reviewTrendData }: DashboardProps) => {
       </div>
 
       <div>
-        <p>Evolução Média de Avaliações ao Longo do Tempo</p>
+        <Typography variant="caption">Evolução Média de Avaliações ao Longo do Tempo</Typography>
         <LineChart
           width={600}
           height={300}
