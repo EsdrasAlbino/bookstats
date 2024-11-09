@@ -1,11 +1,11 @@
 // src/pages/BookList.js
 import {
-    Card,
-    CardContent,
-    CircularProgress,
-    Container,
-    TextField,
-    Typography,
+  Card,
+  CardContent,
+  CircularProgress,
+  Container,
+  TextField,
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { BookClient } from "../services/books/books";
@@ -14,7 +14,7 @@ import { fetchBooks } from "../services/books/getBooks";
 
 const BookList = () => {
   const [books, setBooks] = useState<BookClient[]>();
-  const [query, setQuery] = useState("Harry Potter");
+  const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -52,6 +52,8 @@ const BookList = () => {
         onChange={(e) => setQuery(e.target.value)}
       />
       {loading && <CircularProgress />}
+
+      {(!loading && !query) && <Typography>Insira um termo de busca</Typography>}
 
       {!loading && (
         <div>

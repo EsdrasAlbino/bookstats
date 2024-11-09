@@ -6,7 +6,7 @@ export const fetchBooks = async (query: string) => {
   try {
     const response:AxiosResponse<Volume> = await api.get("/v1/volumes", {
       params: {
-        q: query,
+        q: query || "Harry Potter",
       },
     });
     return response.data.items;
