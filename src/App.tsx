@@ -1,5 +1,5 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
-import './App.css'
+import './styles/App.css'
 import BookList from './pages/BookList'
 
 function App() {
