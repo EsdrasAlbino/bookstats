@@ -6,6 +6,7 @@ import { fetchBooks } from "../services/books/getBooks";
 import Cards from "../components/cards/Cards";
 //import { Link } from "react-router-dom";
 import "../styles/Booklist.css";
+import { Dashboard } from "./Dashboard";
 
 interface GenreData {
   genre: string;
@@ -96,10 +97,7 @@ const BookList = () => {
   };
 
   return (
-    <Container
-      maxWidth="md"
-      className="container"
-    >
+    <Container maxWidth="md" className="container">
       <h1>Lista de Livros</h1>
       <TextField
         label="Buscar Livro"
@@ -112,11 +110,14 @@ const BookList = () => {
       {loading && <CircularProgress />}
 
       {!loading && (
-        <div className="book-list">
-          {books?.map((book) => (
-            <Cards key={book.id} book={book} />
-          ))}
-        </div>
+        <>
+          <Dashboard genreData={genreData} reviewTrendData={reviewTrendData} />
+          <div className="book-list">
+            {books?.map((book) => (
+              <Cards key={book.id} book={book} />
+            ))}
+          </div>
+        </>
       )}
     </Container>
   );

@@ -44,8 +44,7 @@ const Cards: React.FC<CardsProps> = ({ book }) => {
       <CardContent>
         <Typography variant="h6">{book.title}</Typography>
         <Typography variant="subtitle1">Autor: {book.author}</Typography>
-        <Typography variant="caption">Gênero: {book.genre}</Typography>
-        <Typography variant="caption">Avaliação:</Typography>
+        <Typography variant="subtitle2">Gênero: {book.genre}</Typography>
         {starRender().map((star) => star)}
       </CardContent>
     </Card>
