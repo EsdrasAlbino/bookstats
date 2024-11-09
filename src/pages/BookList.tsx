@@ -1,10 +1,11 @@
 // src/pages/BookList.js
 import {
-  Card,
-  CardContent,
-  Container,
-  TextField,
-  Typography,
+    Card,
+    CardContent,
+    CircularProgress,
+    Container,
+    TextField,
+    Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { BookClient } from "../services/books/books";
@@ -14,9 +15,11 @@ import { fetchBooks } from "../services/books/getBooks";
 const BookList = () => {
   const [books, setBooks] = useState<BookClient[]>();
   const [query, setQuery] = useState("Harry Potter");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getBooks = async () => {
+      setLoading(true);
       const data = await fetchBooks(query);
       const bookList = data.map((item) => ({
         id: item.id,
@@ -26,6 +29,7 @@ const BookList = () => {
         rating: item.volumeInfo.averageRating,
       }));
       setBooks(bookList);
+      setLoading(false);
     };
     getBooks();
   }, [query]);
@@ -36,6 +40,7 @@ const BookList = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        gap: "1rem",
       }}
     >
       <h1>Lista de Livros</h1>
@@ -46,20 +51,28 @@ const BookList = () => {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
-      <div>
-        {books?.map((book) => (
-          <Card key={book.id} style={{ margin: "1rem" }}>
-            {/* <Link to={`/books/${book.id}`}> */}
-            <CardContent>
-              <Typography variant="h6">{book.title}</Typography>
-              <Typography variant="subtitle1">Autor: {book.author}</Typography>
-              <Typography variant="body2">Gênero: {book.genre}</Typography>
-              <Typography variant="body2">Avaliação: {book.rating}</Typography>
-            </CardContent>
-            {/* </Link> */}
-          </Card>
-        ))}
-      </div>
+      {loading && <CircularProgress />}
+
+      {!loading && (
+        <div>
+          {books?.map((book) => (
+            <Card key={book.id} style={{ margin: "1rem" }}>
+              {/* <Link to={`/books/${book.id}`}> */}
+              <CardContent>
+                <Typography variant="h6">{book.title}</Typography>
+                <Typography variant="subtitle1">
+                  Autor: {book.author}
+                </Typography>
+                <Typography variant="body2">Gênero: {book.genre}</Typography>
+                <Typography variant="body2">
+                  Avaliação: {book.rating}
+                </Typography>
+              </CardContent>
+              {/* </Link> */}
+            </Card>
+          ))}
+        </div>
+      )}
     </Container>
   );
 };
