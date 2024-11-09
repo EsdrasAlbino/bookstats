@@ -31,7 +31,7 @@ const BookList = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (query) getBooks();
+    getBooks();
   }, [query]);
 
   const getBooks = async () => {
