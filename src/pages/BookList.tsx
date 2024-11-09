@@ -1,17 +1,11 @@
 // src/pages/BookList.js
-import {
-  Card,
-  CardContent,
-  CircularProgress,
-  Container,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { CircularProgress, Container, TextField } from "@mui/material";
+import { useEffect, useState } from "react";
 import { Book, BookClient } from "../services/books/books";
 import { fetchBooks } from "../services/books/getBooks";
-import { Dashboard } from "./Dashboard";
+import Cards from "../components/cards/Cards";
 //import { Link } from "react-router-dom";
+import "../styles/Booklist.css";
 
 interface GenreData {
   genre: string;
@@ -104,12 +98,7 @@ const BookList = () => {
   return (
     <Container
       maxWidth="md"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: "1rem",
-      }}
+      className="container"
     >
       <h1>Lista de Livros</h1>
       <TextField
@@ -123,39 +112,9 @@ const BookList = () => {
       {loading && <CircularProgress />}
 
       {!loading && (
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            gap: "1rem",
-            width: "100%",
-          }}
-        >
-          <Dashboard genreData={genreData} reviewTrendData={reviewTrendData} />
+        <div className="book-list">
           {books?.map((book) => (
-            <Card
-              key={book.id}
-              style={{
-                width: "100%",
-                maxWidth: "300px", // Largura máxima para manter os cartões compactos
-                margin: "1rem",
-                boxSizing: "border-box",
-              }}
-            >
-              {/* <Link to={`/books/${book.id}`}> */}
-              <CardContent>
-                <Typography variant="h6">{book.title}</Typography>
-                <Typography variant="subtitle1">
-                  Autor: {book.author}
-                </Typography>
-                <Typography variant="body2">Gênero: {book.genre}</Typography>
-                <Typography variant="body2">
-                  Avaliação: {book.rating}
-                </Typography>
-              </CardContent>
-              {/* </Link> */}
-            </Card>
+            <Cards key={book.id} book={book} />
           ))}
         </div>
       )}

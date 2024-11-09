@@ -22,9 +22,13 @@ export const Dashboard = ({ genreData, reviewTrendData }: DashboardProps) => {
       style={{ display: "flex", alignContent: "center", alignItems: "center" }}
     >
       <div>
+<<<<<<< HEAD
         <Typography variant="caption">
           Distribuição de Avaliações por Gênero de Livro
         </Typography>
+=======
+        <Typography variant="caption">Distribuição de Avaliações por Gênero de Livro</Typography>
+>>>>>>> dev
         <BarChart
           width={600}
           height={300}
@@ -41,9 +45,13 @@ export const Dashboard = ({ genreData, reviewTrendData }: DashboardProps) => {
       </div>
 
       <div>
+<<<<<<< HEAD
         <Typography variant="caption">
           Evolução Média de Avaliações ao Longo do Tempo
         </Typography>
+=======
+        <Typography variant="caption">Evolução Média de Avaliações ao Longo do Tempo</Typography>
+>>>>>>> dev
         <LineChart
           width={600}
           height={300}
