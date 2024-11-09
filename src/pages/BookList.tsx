@@ -7,9 +7,9 @@ import {
     Typography,
   } from "@mui/material";
   import { useEffect, useState } from "react";
-  import { Link } from "react-router-dom";
-  import { fetchBooks } from "../services/books/getBooks";
-  import { BookClient } from "../services/books/books";
+import { BookClient } from "../services/books/books";
+import { fetchBooks } from "../services/books/getBooks";
+  //import { Link } from "react-router-dom";
   
   const BookList = () => {
     const [books, setBooks] = useState<BookClient[]>();
@@ -49,7 +49,7 @@ import {
         <div>
           {books?.map((book) => (
             <Card key={book.id} style={{ margin: "1rem" }}>
-              <Link to={`/books/${book.id}`}>
+              {/* <Link to={`/books/${book.id}`}> */}
                 <CardContent>
                   <Typography variant="h6">{book.title}</Typography>
                   <Typography variant="subtitle1">
@@ -60,7 +60,7 @@ import {
                     Avaliação: {book.rating}
                   </Typography>
                 </CardContent>
-              </Link>
+              {/* </Link> */}
             </Card>
           ))}
         </div>
