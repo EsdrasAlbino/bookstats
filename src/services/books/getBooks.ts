@@ -9,7 +9,6 @@ export const fetchBooks = async (query: string) => {
         q: query,
       },
     });
-    console.log("first response", response.data.items);
     return response.data.items;
   } catch (error) {
     console.error("Erro ao buscar livros:", error);

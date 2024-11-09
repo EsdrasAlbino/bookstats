@@ -39,13 +39,6 @@ import { fetchBooks } from "../services/books/getBooks";
         }}
       >
         <h1>Lista de Livros</h1>
-        <TextField
-          label="Buscar Livro"
-          variant="outlined"
-          fullWidth
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
         <div>
           {books?.map((book) => (
             <Card key={book.id} style={{ margin: "1rem" }}>
