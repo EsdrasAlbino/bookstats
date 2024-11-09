@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Book, BookClient } from "../services/books/books";
 import { fetchBooks } from "../services/books/getBooks";
 import { Dashboard } from "./Dashboard";
@@ -31,7 +31,7 @@ const BookList = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (query) getBooks();
+    getBooks();
   }, [query]);
 
   const getBooks = async () => {
