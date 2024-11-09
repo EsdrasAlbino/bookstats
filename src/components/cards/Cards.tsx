@@ -17,7 +17,7 @@ interface CardsProps {
 }
 
 const Cards: React.FC<CardsProps> = ({ book }) => {
-    
+
   const starRender = () => {
     const stars = [];
     const fullStars = Math.floor(book.rating);
@@ -40,12 +40,12 @@ const Cards: React.FC<CardsProps> = ({ book }) => {
   };
 
   return (
-    <Card>
+    <Card style={{width:300}}>
       <CardContent>
         <Typography variant="h6">{book.title}</Typography>
         <Typography variant="subtitle1">Autor: {book.author}</Typography>
-        <Typography variant="body2">Gênero: {book.genre}</Typography>
-        <Typography variant="body2">Avaliação:</Typography>
+        <Typography variant="caption">Gênero: {book.genre}</Typography>
+        <Typography variant="caption">Avaliação:</Typography>
         {starRender().map((star) => star)}
       </CardContent>
     </Card>
