@@ -29,7 +29,7 @@ export const Dashboard = ({ genreData, reviewTrendData }: DashboardProps) => {
           margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="genre" />
+          <XAxis dataKey="genre" tick={false}/>
           <YAxis />
           <Tooltip />
           <Legend />
@@ -47,7 +47,7 @@ export const Dashboard = ({ genreData, reviewTrendData }: DashboardProps) => {
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="month" />
-          <YAxis />
+          <YAxis domain={[0, 1, 2, 3, 4, 5]} />
           <Tooltip />
           <Legend />
           <Line type="monotone" dataKey="averageReview" stroke="#82ca9d" />
