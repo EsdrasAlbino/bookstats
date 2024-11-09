@@ -7,77 +7,99 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { BookClient } from "../services/books/books";
+import { useCallback, useEffect, useState } from "react";
+import { Book, BookClient } from "../services/books/books";
 import { fetchBooks } from "../services/books/getBooks";
 import { Dashboard } from "./Dashboard";
 //import { Link } from "react-router-dom";
 
+interface GenreData {
+  genre: string;
+  reviews: number;
+}
+
+interface ReviewTrendData {
+  month: string;
+  averageReview: number;
+}
+
 const BookList = () => {
   const [books, setBooks] = useState<BookClient[]>();
   const [query, setQuery] = useState("");
-  const [genreData, setGenreData] = useState([]);
-  const [reviewTrendData, setReviewTrendData] = useState([]);
+  const [genreData, setGenreData] = useState<GenreData[]>([]);
+  const [reviewTrendData, setReviewTrendData] = useState<ReviewTrendData[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const getBooks = async () => {
-      setLoading(true);
-      const data = await fetchBooks(query);
-      const bookList = data.map((item) => ({
-        id: item.id,
-        title: item.volumeInfo.title,
-        author: item.volumeInfo.authors?.join(", "),
-        genre: item.volumeInfo.categories?.[0],
-        rating: item.volumeInfo.averageRating,
-      }));
-      const genreCount: { [key: string]: number } = {};
-      const reviewTrend: { [key: string]: number[] } = {};
-
-      data.forEach((book) => {
-        const genre = book.volumeInfo.categories
-          ? book.volumeInfo.categories[0]
-          : "Unknown";
-        const averageRating = book.volumeInfo.averageRating || 0;
-        const publishedDate = book.volumeInfo.publishedDate
-          ? new Date(book.volumeInfo.publishedDate).getMonth()
-          : 0;
-
-        if (genreCount[genre]) {
-          genreCount[genre]++;
-        } else {
-          genreCount[genre] = 1;
-        }
-
-        if (reviewTrend[publishedDate]) {
-          reviewTrend[publishedDate].push(averageRating);
-        } else {
-          reviewTrend[publishedDate] = [averageRating];
-        }
-      });
-
-      const genreDataArray = Object.keys(genreCount).map((genre) => ({
-        genre,
-        reviews: genreCount[genre],
-      }));
-
-      const reviewTrendDataArray = Object.keys(reviewTrend).map((month) => ({
-        month: new Date(0, parseInt(month)).toLocaleString("default", {
-          month: "short",
-        }),
-        averageReview:
-          reviewTrend[month].reduce((a, b) => a + b, 0) /
-          reviewTrend[month].length,
-      }));
-
-      setGenreData(genreDataArray);
-      setReviewTrendData(reviewTrendDataArray);
-
-      setBooks(bookList);
-      setLoading(false);
-    };
-    getBooks();
+    if (query) getBooks();
   }, [query]);
+
+  const getBooks = async () => {
+    setLoading(true);
+    const bookRequest = await fetchBooks(query);
+    const bookList = bookRequest.map((item) => ({
+      id: item.id,
+      title: item.volumeInfo.title,
+      author: item.volumeInfo.authors?.join(", "),
+      genre: item.volumeInfo.categories?.[0],
+      rating: item.volumeInfo.averageRating,
+    }));
+
+    const { genreDataArray, reviewTrend } = genreAccount(bookRequest);
+    const reviewTrendDataArray = reviewTrending(reviewTrend);
+
+    setGenreData(genreDataArray);
+    setReviewTrendData(reviewTrendDataArray);
+    setBooks(bookList);
+
+    setLoading(false);
+  };
+
+  const genreAccount = (books: Book[]) => {
+    const genreCount: { [key: string]: number } = {};
+    const reviewTrend: { [key: string]: number[] } = {};
+    books.forEach((book) => {
+      const genre = book.volumeInfo.categories
+        ? book.volumeInfo.categories[0]
+        : "Unknown";
+      const averageRating = book.volumeInfo.averageRating || 0;
+      const publishedDate = book.volumeInfo.publishedDate
+        ? new Date(book.volumeInfo.publishedDate).getMonth()
+        : 0;
+
+      if (genreCount[genre]) {
+        genreCount[genre]++;
+      } else {
+        genreCount[genre] = 1;
+      }
+
+      if (reviewTrend[publishedDate]) {
+        reviewTrend[publishedDate].push(averageRating);
+      } else {
+        reviewTrend[publishedDate] = [averageRating];
+      }
+    });
+
+    const genreDataArray = Object.keys(genreCount).map((genre) => ({
+      genre,
+      reviews: genreCount[genre],
+    }));
+
+    return { genreDataArray, reviewTrend };
+  };
+
+  const reviewTrending = (reviewTrend: { [key: string]: number[] }) => {
+    const reviewTrendDataArray = Object.keys(reviewTrend).map((month) => ({
+      month: new Date(0, parseInt(month)).toLocaleString("default", {
+        month: "short",
+      }),
+      averageReview:
+        reviewTrend[month].reduce((a, b) => a + b, 0) /
+        reviewTrend[month].length,
+    }));
+
+    return reviewTrendDataArray;
+  };
 
   return (
     <Container
@@ -110,7 +132,7 @@ const BookList = () => {
             width: "100%",
           }}
         >
-          <Dashboard genreData={genreData} reviewTrendData={reviewTrendData}/>
+          <Dashboard genreData={genreData} reviewTrendData={reviewTrendData} />
           {books?.map((book) => (
             <Card
               key={book.id}

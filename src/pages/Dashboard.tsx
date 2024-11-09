@@ -10,7 +10,12 @@ import {
   YAxis,
 } from "recharts";
 
-export const Dashboard = ({ genreData, reviewTrendData }) => {
+interface DashboardProps {
+  genreData: { genre: string; reviews: number }[];
+  reviewTrendData: { month: string; averageReview: number }[];
+}
+
+export const Dashboard = ({ genreData, reviewTrendData }: DashboardProps) => {
   return (
     <div
       style={{ display: "flex", alignContent: "center", alignItems: "center" }}
