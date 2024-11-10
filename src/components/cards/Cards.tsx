@@ -19,10 +19,12 @@ interface CardsProps {
 const Cards: React.FC<CardsProps> = ({ book }) => {
 
   const starRender = () => {
+    
     const stars = [];
-    const fullStars = Math.floor(book.rating);
-    const hasHalfStar = book.rating % 1 !== 0;
+    const fullStars = Math.floor(book.rating || 0);
+    const hasHalfStar = (book.rating || 0) % 1 !== 0;
     const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    console.log("ranting and hasHalfStar", (book.rating || 0), hasHalfStar);
 
     for (let i = 0; i < fullStars; i++) {
       stars.push(<Star key={`full-${i}`} />);
