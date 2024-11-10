@@ -40,7 +40,7 @@ const Cards: React.FC<CardsProps> = ({ book }) => {
 
 
   return (
-    <Card style={{ width: 300 }}>
+    <Card style={{ width: 260 }}>
       <CardContent>
         <Typography variant="h6">{book.title}</Typography>
         {book?.author && (

@@ -10,7 +10,9 @@ import {
   Tooltip,
   XAxis,
   YAxis,
+  ResponsiveContainer,
 } from "recharts";
+import "../styles/Dashboard.css";
 
 interface DashboardProps {
   genreData: { genre: string; reviews: number }[];
@@ -27,48 +29,46 @@ export const Dashboard = ({ genreData, reviewTrendData }: DashboardProps) => {
   }, [genreData, reviewTrendData]);
   
   return (
-    <div
-      style={{ display: "flex", alignContent: "center", alignItems: "center" }}
-    >
-      {!show && <Typography variant="h6">Carregando metricas...</Typography>}
+    <div className="dashboard-container">
+      {!show && <Typography variant="h6">Carregando métricas...</Typography>}
       {show && (
         <>
-          <div>
-            <Typography variant="caption">
+          <div className="chart-container">
+            <Typography variant="caption" className="chart-title">
               Distribuição de Avaliações por Gênero de Livro
             </Typography>
-            <BarChart
-              width={600}
-              height={300}
-              data={genreData}
-              margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="genre" tick={false} />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="reviews" fill="#8884d8" />
-            </BarChart>
+            <ResponsiveContainer>
+              <BarChart
+                data={genreData}
+                margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="genre" tick={false} />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="reviews" fill="#8884d8" />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
 
-          <div>
-            <Typography variant="caption">
+          <div className="chart-container">
+            <Typography variant="caption" className="chart-title">
               Evolução Média de Avaliações ao Longo do Tempo
             </Typography>
-            <LineChart
-              width={600}
-              height={300}
-              data={reviewTrendData}
-              margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis domain={[0, 1, 2, 3, 4, 5]} />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="averageReview" stroke="#82ca9d" />
-            </LineChart>
+            <ResponsiveContainer>
+              <LineChart
+                data={reviewTrendData}
+                margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis domain={[0, 1, 2, 3, 4, 5]} />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="averageReview" stroke="#82ca9d" />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </>
       )}

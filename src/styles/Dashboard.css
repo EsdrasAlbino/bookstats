@@ -1,0 +1,26 @@
+/* src/pages/Dashboard.css */
+
+.dashboard-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 20px;
+  }
+  
+  .chart-container {
+    width: 45%;
+    height: 400px;
+  }
+  
+  .chart-title {
+    font-size: 0.75rem;
+  }
+
+  @media (max-width: 768px) {
+    .chart-container {
+      width: 300px;
+    }
+  }
