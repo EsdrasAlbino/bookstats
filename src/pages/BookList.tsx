@@ -1,12 +1,15 @@
 // src/pages/BookList.js
-import { CircularProgress, Container, TextField } from "@mui/material";
+import {
+  CircularProgress,
+  Container,
+  TextField
+} from "@mui/material";
 import { useEffect, useState } from "react";
-import Cards from "../components/cards/Cards";
-import { Book, BookClient } from "../services/books/books";
-import { fetchBooks } from "../services/books/getBooks";
-//import { Link } from "react-router-dom";
 import { MenuBarLocal, menuOptions } from "../components/menu/MenuLocal";
+import { BookListTemplate } from "../components/templates/bookList/BookListTemplate";
 import { DashboardTemplate } from "../components/templates/dashboard/DashboardTemplate";
+import { BookClient, Volume } from "../services/books/books";
+import { fetchBooks } from "../services/books/getBooks";
 import "../styles/Booklist.css";
 
 interface GenreData {
@@ -19,22 +22,39 @@ interface ReviewTrendData {
   averageReview: number;
 }
 
+interface SaleInfo {
+  isEbook?: boolean;
+}
+
+interface BookWithSaleInfo extends Volume {
+  saleInfo?: SaleInfo;
+}
+
 const BookList = () => {
   const [books, setBooks] = useState<BookClient[]>();
   const [query, setQuery] = useState("");
   const [genreData, setGenreData] = useState<GenreData[]>([]);
   const [reviewTrendData, setReviewTrendData] = useState<ReviewTrendData[]>([]);
+  const [ebookConversionData, setEbookConversionData] = useState<{ name: string; value: number }[]>([]);
   const [loading, setLoading] = useState(false);
   const [view, setView] = useState<"list" | "dashboard">("list");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 20;
 
   useEffect(() => {
     getBooks();
-  }, [query]);
+  }, [query, page]);
 
   const getBooks = async () => {
     setLoading(true);
-    const bookRequest = await fetchBooks(query);
-    const bookList = bookRequest.map((item) => ({
+    const bookRequest = await fetchBooks(
+      query,
+      (page - 1) * itemsPerPage,
+      itemsPerPage
+    );
+    if (!bookRequest) return;
+    const bookList = bookRequest.items.map((item) => ({
       id: item.id,
       title: item.volumeInfo.title,
       author: item.volumeInfo.authors?.join(", "),
@@ -42,17 +62,20 @@ const BookList = () => {
       rating: item.volumeInfo.averageRating,
     }));
 
-    const { genreDataArray, reviewTrend } = genreAccount(bookRequest);
+    const { genreDataArray, reviewTrend } = genreAccount(bookRequest.items);
     const reviewTrendDataArray = reviewTrending(reviewTrend);
+    const ebookConversionData = calculateEbookConversionData(bookRequest.items);
 
     setGenreData(genreDataArray);
     setReviewTrendData(reviewTrendDataArray);
+    setEbookConversionData(ebookConversionData);
     setBooks(bookList);
+    setTotalPages(Math.ceil(bookRequest.totalItems / itemsPerPage));
 
     setLoading(false);
   };
 
-  const genreAccount = (books: Book[]) => {
+  const genreAccount = (books: Volume[]) => {
     const genreCount: { [key: string]: number } = {};
     const reviewTrend: { [key: string]: number[] } = {};
     books.forEach((book) => {
@@ -98,6 +121,31 @@ const BookList = () => {
     return reviewTrendDataArray;
   };
 
+  const calculateEbookConversionData = (books: BookWithSaleInfo[]) => {
+    let ebookCount = 0;
+  
+    books.forEach((book) => {
+      if (book.saleInfo?.isEbook) {
+        ebookCount++;
+      }
+    });
+  
+    const totalBooks = books.length;
+    const physicalCount = totalBooks - ebookCount;
+  
+    return [
+      { name: "eBooks", value: ebookCount },
+      { name: "Físico", value: physicalCount }
+    ];
+  };
+
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    console.log("value", value);
+    setPage(value);
+  };
   const menuOptions: menuOptions[] = [
     {
       onPress: () => setView("list"),
@@ -126,17 +174,19 @@ const BookList = () => {
       {loading && <CircularProgress />}
 
       {!loading && view === "list" && (
-        <div className="book-list">
-          {books?.map((book) => (
-            <Cards key={book.id} book={book} />
-          ))}
-        </div>
+        <BookListTemplate
+          books={books}
+          totalPages={totalPages}
+          page={page}
+          handlePageChange={handlePageChange}
+        />
       )}
 
       {!loading && view === "dashboard" && (
         <DashboardTemplate
           genreData={genreData}
           reviewTrendData={reviewTrendData}
+          ebookConversionData={ebookConversionData}
         />
       )}
     </Container>

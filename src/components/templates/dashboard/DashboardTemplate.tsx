@@ -11,15 +11,23 @@ import {
   XAxis,
   YAxis,
   ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
 import "../../../styles/DashboardTemplate.css";
 
 interface DashboardProps {
   genreData: { genre: string; reviews: number }[];
   reviewTrendData: { month: string; averageReview: number }[];
+  ebookConversionData: { name: string; value: number }[];
 }
 
-export const DashboardTemplate = ({ genreData, reviewTrendData }: DashboardProps) => {
+export const DashboardTemplate = ({
+  genreData,
+  reviewTrendData,
+  ebookConversionData
+}: DashboardProps) => {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -27,7 +35,9 @@ export const DashboardTemplate = ({ genreData, reviewTrendData }: DashboardProps
       setShow(true);
     }, 1000);
   }, [genreData, reviewTrendData]);
-  
+
+  const COLORS = ['#8884d8', '#82ca9d'];
+
   return (
     <div className="dashboard-container">
       {!show && <Typography variant="h6">Carregando métricas...</Typography>}
@@ -66,8 +76,43 @@ export const DashboardTemplate = ({ genreData, reviewTrendData }: DashboardProps
                 <YAxis domain={[0, 1, 2, 3, 4, 5]} />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="averageReview" stroke="#82ca9d" />
+                <Line
+                  type="monotone"
+                  dataKey="averageReview"
+                  stroke="#82ca9d"
+                />
               </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="chart-container">
+            <Typography variant="caption" className="chart-title">
+              Taxa de Conversão de Livros para eBooks
+            </Typography>
+            <ResponsiveContainer>
+              <PieChart>
+                <Pie
+                  data={ebookConversionData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) =>
+                    `${name}: ${(percent * 100).toFixed(0)}%`
+                  }
+                  outerRadius={150}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {ebookConversionData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
             </ResponsiveContainer>
           </div>
         </>

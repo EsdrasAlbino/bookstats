@@ -5,6 +5,7 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import BookList from "./pages/BookList";
 import "./styles/App.css";
 import { darkTheme, lightTheme } from "./theme";
+import { BookDetails } from "./pages/BookDetails";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -24,6 +25,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<BookList />} />
+          <Route path="/book/:id" element={<BookDetails />} />
         </Routes>
       </Router>
     </ThemeProvider>

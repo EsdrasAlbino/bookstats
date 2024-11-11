@@ -1,17 +1,23 @@
 import { AxiosResponse } from "axios";
 import { api } from "../api";
-import { Volume } from "./books";
+import { VolumeList } from "./books";
 
-export const fetchBooks = async (query: string) => {
+export const fetchBooks = async (
+  query: string,
+  startIndex: number,
+  maxResults: number
+) => {
   try {
-    const response:AxiosResponse<Volume> = await api.get("/v1/volumes", {
+    const response: AxiosResponse<VolumeList> = await api.get("/v1/volumes", {
       params: {
         q: query || "Harry Potter",
+        startIndex,
+        maxResults,
       },
     });
-    return response.data.items;
+    return response.data;
   } catch (error) {
     console.error("Erro ao buscar livros:", error);
-    return [];
+    //return [];
   }
 };

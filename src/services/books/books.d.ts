@@ -1,4 +1,4 @@
-export interface Book {
+export interface Volume {
     kind: string;
     id: string;
     etag: string;
@@ -36,9 +36,9 @@ export interface Book {
     };
   }
   
-  export interface Volume {
+  export interface VolumeList {
     kind: string;
-    items: Book[];
+    items: Volume[];
     totalItems: number;
   }
   
