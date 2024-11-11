@@ -2,9 +2,9 @@
 import { CircularProgress, Container, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import Cards from "../components/cards/Cards";
-import { Book, BookClient } from "../services/books/books";
+import { Volume, BookClient } from "../services/books/books";
 import { fetchBooks } from "../services/books/getBooks";
-//import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { MenuBarLocal, menuOptions } from "../components/menu/MenuLocal";
 import { DashboardTemplate } from "../components/templates/dashboard/DashboardTemplate";
 import "../styles/Booklist.css";
@@ -52,7 +52,7 @@ const BookList = () => {
     setLoading(false);
   };
 
-  const genreAccount = (books: Book[]) => {
+  const genreAccount = (books: Volume[]) => {
     const genreCount: { [key: string]: number } = {};
     const reviewTrend: { [key: string]: number[] } = {};
     books.forEach((book) => {
@@ -128,7 +128,9 @@ const BookList = () => {
       {!loading && view === "list" && (
         <div className="book-list">
           {books?.map((book) => (
-            <Cards key={book.id} book={book} />
+            <Link to={`/book/${book.id}`} style={{ textDecoration: "none" }}>
+              <Cards key={book.id} book={book} />
+            </Link>
           ))}
         </div>
       )}

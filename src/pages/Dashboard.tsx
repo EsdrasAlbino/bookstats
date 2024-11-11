@@ -1,5 +1,5 @@
 import { DashboardTemplate } from "../components/templates/dashboard/DashboardTemplate";
-import { Book } from "../services/books/books";
+import { Volume } from "../services/books/books";
 
 interface DashboardProps {
   genreData: { genre: string; reviews: number }[];
@@ -8,7 +8,7 @@ interface DashboardProps {
 
 export const Dashboard = ({ genreData, reviewTrendData }: DashboardProps) => {
 
-  const genreAccount = (books: Book[]) => {
+  const genreAccount = (books: Volume[]) => {
     const genreCount: { [key: string]: number } = {};
     const reviewTrend: { [key: string]: number[] } = {};
     books.forEach((book) => {
