@@ -1,18 +1,15 @@
 // src/pages/BookList.js
 import {
-  Box,
   CircularProgress,
   Container,
-  Pagination,
-  TextField,
+  TextField
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import Cards from "../components/cards/Cards";
-import { Volume, BookClient } from "../services/books/books";
-import { fetchBooks } from "../services/books/getBooks";
-import { Link } from "react-router-dom";
 import { MenuBarLocal, menuOptions } from "../components/menu/MenuLocal";
+import { BookListTemplate } from "../components/templates/bookList/BookListTemplate";
 import { DashboardTemplate } from "../components/templates/dashboard/DashboardTemplate";
+import { BookClient, Volume } from "../services/books/books";
+import { fetchBooks } from "../services/books/getBooks";
 import "../styles/Booklist.css";
 
 interface GenreData {
@@ -149,22 +146,12 @@ const BookList = () => {
       {loading && <CircularProgress />}
 
       {!loading && view === "list" && (
-        <>
-          <div className="book-list">
-            {books?.map((book) => (
-              <Link to={`/book/${book.id}`} style={{ textDecoration: "none" }}>
-                <Cards key={book.id} book={book} />
-              </Link>
-            ))}
-          </div>
-          <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
-            <Pagination
-              count={totalPages}
-              page={page}
-              onChange={handlePageChange}
-            />
-          </Box>
-        </>
+        <BookListTemplate
+          books={books}
+          totalPages={totalPages}
+          page={page}
+          handlePageChange={handlePageChange}
+        />
       )}
 
       {!loading && view === "dashboard" && (
