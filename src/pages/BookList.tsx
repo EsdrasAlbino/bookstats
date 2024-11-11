@@ -1,5 +1,11 @@
 // src/pages/BookList.js
-import { CircularProgress, Container, TextField } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Pagination,
+  TextField,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import Cards from "../components/cards/Cards";
 import { Volume, BookClient } from "../services/books/books";
@@ -26,15 +32,23 @@ const BookList = () => {
   const [reviewTrendData, setReviewTrendData] = useState<ReviewTrendData[]>([]);
   const [loading, setLoading] = useState(false);
   const [view, setView] = useState<"list" | "dashboard">("list");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 20;
 
   useEffect(() => {
     getBooks();
-  }, [query]);
+  }, [query, page]);
 
   const getBooks = async () => {
     setLoading(true);
-    const bookRequest = await fetchBooks(query);
-    const bookList = bookRequest.map((item) => ({
+    const bookRequest = await fetchBooks(
+      query,
+      (page - 1) * itemsPerPage,
+      itemsPerPage
+    );
+    if (!bookRequest) return;
+    const bookList = bookRequest.items.map((item) => ({
       id: item.id,
       title: item.volumeInfo.title,
       author: item.volumeInfo.authors?.join(", "),
@@ -42,12 +56,13 @@ const BookList = () => {
       rating: item.volumeInfo.averageRating,
     }));
 
-    const { genreDataArray, reviewTrend } = genreAccount(bookRequest);
+    const { genreDataArray, reviewTrend } = genreAccount(bookRequest.items);
     const reviewTrendDataArray = reviewTrending(reviewTrend);
 
     setGenreData(genreDataArray);
     setReviewTrendData(reviewTrendDataArray);
     setBooks(bookList);
+    setTotalPages(Math.ceil(bookRequest.totalItems / itemsPerPage));
 
     setLoading(false);
   };
@@ -98,6 +113,14 @@ const BookList = () => {
     return reviewTrendDataArray;
   };
 
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    console.log("value", value);
+    setPage(value);
+  };
+
   const menuOptions: menuOptions[] = [
     {
       onPress: () => setView("list"),
@@ -126,13 +149,22 @@ const BookList = () => {
       {loading && <CircularProgress />}
 
       {!loading && view === "list" && (
-        <div className="book-list">
-          {books?.map((book) => (
-            <Link to={`/book/${book.id}`} style={{ textDecoration: "none" }}>
-              <Cards key={book.id} book={book} />
-            </Link>
-          ))}
-        </div>
+        <>
+          <div className="book-list">
+            {books?.map((book) => (
+              <Link to={`/book/${book.id}`} style={{ textDecoration: "none" }}>
+                <Cards key={book.id} book={book} />
+              </Link>
+            ))}
+          </div>
+          <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={handlePageChange}
+            />
+          </Box>
+        </>
       )}
 
       {!loading && view === "dashboard" && (
