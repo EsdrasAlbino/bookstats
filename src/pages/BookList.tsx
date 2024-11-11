@@ -1,12 +1,13 @@
 // src/pages/BookList.js
 import { CircularProgress, Container, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
+import Cards from "../components/cards/Cards";
 import { Book, BookClient } from "../services/books/books";
 import { fetchBooks } from "../services/books/getBooks";
-import Cards from "../components/cards/Cards";
 //import { Link } from "react-router-dom";
+import { MenuBarLocal, menuOptions } from "../components/menu/MenuLocal";
+import { DashboardTemplate } from "../components/templates/dashboard/DashboardTemplate";
 import "../styles/Booklist.css";
-import { Dashboard } from "./Dashboard";
 
 interface GenreData {
   genre: string;
@@ -24,6 +25,7 @@ const BookList = () => {
   const [genreData, setGenreData] = useState<GenreData[]>([]);
   const [reviewTrendData, setReviewTrendData] = useState<ReviewTrendData[]>([]);
   const [loading, setLoading] = useState(false);
+  const [view, setView] = useState<"list" | "dashboard">("list");
 
   useEffect(() => {
     getBooks();
@@ -96,6 +98,19 @@ const BookList = () => {
     return reviewTrendDataArray;
   };
 
+  const menuOptions: menuOptions[] = [
+    {
+      onPress: () => setView("list"),
+      backgroundColor: view === "list" ? "#070932" : "",
+      text: "Lista de Livros",
+    },
+    {
+      onPress: () => setView("dashboard"),
+      backgroundColor: view === "dashboard" ? "#070932" : "",
+      text: "Dashboard de Métricas",
+    },
+  ];
+
   return (
     <Container maxWidth="md" className="container">
       <h1>Lista de Livros</h1>
@@ -106,18 +121,23 @@ const BookList = () => {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
+      <MenuBarLocal menuOptions={menuOptions} />
 
       {loading && <CircularProgress />}
 
-      {!loading && (
-        <>
-          <Dashboard genreData={genreData} reviewTrendData={reviewTrendData} />
-          <div className="book-list">
-            {books?.map((book) => (
-              <Cards key={book.id} book={book} />
-            ))}
-          </div>
-        </>
+      {!loading && view === "list" && (
+        <div className="book-list">
+          {books?.map((book) => (
+            <Cards key={book.id} book={book} />
+          ))}
+        </div>
+      )}
+
+      {!loading && view === "dashboard" && (
+        <DashboardTemplate
+          genreData={genreData}
+          reviewTrendData={reviewTrendData}
+        />
       )}
     </Container>
   );
