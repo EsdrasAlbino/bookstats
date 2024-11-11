@@ -22,11 +22,20 @@ interface ReviewTrendData {
   averageReview: number;
 }
 
+interface SaleInfo {
+  isEbook?: boolean;
+}
+
+interface BookWithSaleInfo extends Volume {
+  saleInfo?: SaleInfo;
+}
+
 const BookList = () => {
   const [books, setBooks] = useState<BookClient[]>();
   const [query, setQuery] = useState("");
   const [genreData, setGenreData] = useState<GenreData[]>([]);
   const [reviewTrendData, setReviewTrendData] = useState<ReviewTrendData[]>([]);
+  const [ebookConversionData, setEbookConversionData] = useState<{ name: string; value: number }[]>([]);
   const [loading, setLoading] = useState(false);
   const [view, setView] = useState<"list" | "dashboard">("list");
   const [page, setPage] = useState(1);
@@ -55,9 +64,11 @@ const BookList = () => {
 
     const { genreDataArray, reviewTrend } = genreAccount(bookRequest.items);
     const reviewTrendDataArray = reviewTrending(reviewTrend);
+    const ebookConversionData = calculateEbookConversionData(bookRequest.items);
 
     setGenreData(genreDataArray);
     setReviewTrendData(reviewTrendDataArray);
+    setEbookConversionData(ebookConversionData);
     setBooks(bookList);
     setTotalPages(Math.ceil(bookRequest.totalItems / itemsPerPage));
 
@@ -110,6 +121,24 @@ const BookList = () => {
     return reviewTrendDataArray;
   };
 
+  const calculateEbookConversionData = (books: BookWithSaleInfo[]) => {
+    let ebookCount = 0;
+  
+    books.forEach((book) => {
+      if (book.saleInfo?.isEbook) {
+        ebookCount++;
+      }
+    });
+  
+    const totalBooks = books.length;
+    const physicalCount = totalBooks - ebookCount;
+  
+    return [
+      { name: "eBooks", value: ebookCount },
+      { name: "Físico", value: physicalCount }
+    ];
+  };
+
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
     value: number
@@ -158,6 +187,7 @@ const BookList = () => {
         <DashboardTemplate
           genreData={genreData}
           reviewTrendData={reviewTrendData}
+          ebookConversionData={ebookConversionData}
         />
       )}
     </Container>
