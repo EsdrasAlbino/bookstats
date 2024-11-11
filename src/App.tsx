@@ -2,10 +2,10 @@ import { Brightness4, Brightness7 } from "@mui/icons-material";
 import { CssBaseline, IconButton, ThemeProvider } from "@mui/material";
 import { useState } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { MenuBar } from "./components/menu/Menu";
 import BookList from "./pages/BookList";
 import "./styles/App.css";
 import { darkTheme, lightTheme } from "./theme";
+import { MenuBar } from "./components/menu/Menu";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -22,9 +22,10 @@ function App() {
           {darkMode ? <Brightness7 /> : <Brightness4 />}
         </IconButton>
       </div>
-      <MenuBar/>
       <Router>
+      <MenuBar/>
         <Routes>
+          
           <Route path="/" element={<BookList />} />
         </Routes>
       </Router>

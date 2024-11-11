@@ -7,6 +7,7 @@ import Cards from "../components/cards/Cards";
 //import { Link } from "react-router-dom";
 import "../styles/Booklist.css";
 import { Dashboard } from "./Dashboard";
+import { MenuBar } from "../components/menu/Menu";
 
 interface GenreData {
   genre: string;
