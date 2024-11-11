@@ -38,7 +38,6 @@ const Cards: React.FC<CardsProps> = ({ book }) => {
     return stars;
   };
 
-
   return (
     <Card style={{ width: 260 }}>
       <CardContent>
