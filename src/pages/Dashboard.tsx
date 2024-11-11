@@ -1,15 +1,5 @@
-import { Typography } from "@mui/material";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Legend,
-  Line,
-  LineChart,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { DashboardTemplate } from "../components/templates/dashboard/DashboardTemplate";
+import { Book } from "../services/books/books";
 
 interface DashboardProps {
   genreData: { genre: string; reviews: number }[];
@@ -17,43 +7,57 @@ interface DashboardProps {
 }
 
 export const Dashboard = ({ genreData, reviewTrendData }: DashboardProps) => {
-  return (
-    <div
-      style={{ display: "flex", alignContent: "center", alignItems: "center" }}
-    >
-      <div>
-        <Typography variant="caption">Distribuição de Avaliações por Gênero de Livro</Typography>
-        <BarChart
-          width={600}
-          height={300}
-          data={genreData}
-          margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="genre" tick={false} />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="reviews" fill="#8884d8" />
-        </BarChart>
-      </div>
 
-      <div>
-        <Typography variant="caption">Evolução Média de Avaliações ao Longo do Tempo</Typography>
-        <LineChart
-          width={600}
-          height={300}
-          data={reviewTrendData}
-          margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis domain={[0, 1, 2, 3, 4, 5]} />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="averageReview" stroke="#82ca9d" />
-        </LineChart>
-      </div>
-    </div>
+  const genreAccount = (books: Book[]) => {
+    const genreCount: { [key: string]: number } = {};
+    const reviewTrend: { [key: string]: number[] } = {};
+    books.forEach((book) => {
+      const genre = book.volumeInfo.categories
+        ? book.volumeInfo.categories[0]
+        : "Unknown";
+      const averageRating = book.volumeInfo.averageRating || 0;
+      const publishedDate = book.volumeInfo.publishedDate
+        ? new Date(book.volumeInfo.publishedDate).getMonth()
+        : 0;
+
+      if (genreCount[genre]) {
+        genreCount[genre]++;
+      } else {
+        genreCount[genre] = 1;
+      }
+
+      if (reviewTrend[publishedDate]) {
+        reviewTrend[publishedDate].push(averageRating);
+      } else {
+        reviewTrend[publishedDate] = [averageRating];
+      }
+    });
+
+    const genreDataArray = Object.keys(genreCount).map((genre) => ({
+      genre,
+      reviews: genreCount[genre],
+    }));
+
+    return { genreDataArray, reviewTrend };
+  };
+
+  const reviewTrending = (reviewTrend: { [key: string]: number[] }) => {
+    const reviewTrendDataArray = Object.keys(reviewTrend).map((month) => ({
+      month: new Date(0, parseInt(month)).toLocaleString("default", {
+        month: "short",
+      }),
+      averageReview:
+        reviewTrend[month].reduce((a, b) => a + b, 0) /
+        reviewTrend[month].length,
+    }));
+
+    return reviewTrendDataArray;
+  };
+
+  return (
+    <DashboardTemplate
+      genreData={genreData}
+      reviewTrendData={reviewTrendData}
+    />
   );
 };
