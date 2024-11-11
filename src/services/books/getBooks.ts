@@ -1,10 +1,10 @@
 import { AxiosResponse } from "axios";
 import { api } from "../api";
-import { Volume } from "./books";
+import { VolumeList } from "./books";
 
 export const fetchBooks = async (query: string) => {
   try {
-    const response:AxiosResponse<Volume> = await api.get("/v1/volumes", {
+    const response:AxiosResponse<VolumeList> = await api.get("/v1/volumes", {
       params: {
         q: query || "Harry Potter",
       },
