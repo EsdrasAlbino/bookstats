@@ -58,6 +58,7 @@ export const Dashboard = ({ genreData, reviewTrendData }: DashboardProps) => {
     <DashboardTemplate
       genreData={genreData}
       reviewTrendData={reviewTrendData}
+      ebookConversionData={[]}
     />
   );
 };
