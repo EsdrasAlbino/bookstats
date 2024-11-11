@@ -10,15 +10,16 @@ interface MenuBarProps {
   menuOptions: menuOptions[];
 }
 
-export const MenuBarLocal = ({menuOptions}: MenuBarProps) => {
+export const MenuBarLocal = ({ menuOptions }: MenuBarProps) => {
   return (
     <Box sx={{ display: "flex", justifyContent: "center", gap: 2, margin: 2 }}>
       {menuOptions.map((option) => (
         <Button
-        key={option.text}
+          key={option.text}
           variant="outlined"
           onClick={option.onPress}
           style={{ background: option.backgroundColor }}
+          color="info"
         >
           {option.text}
         </Button>
