@@ -5,7 +5,6 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import BookList from "./pages/BookList";
 import "./styles/App.css";
 import { darkTheme, lightTheme } from "./theme";
-import { MenuBar } from "./components/menu/Menu";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -23,9 +22,7 @@ function App() {
         </IconButton>
       </div>
       <Router>
-      <MenuBar/>
         <Routes>
-          
           <Route path="/" element={<BookList />} />
         </Routes>
       </Router>

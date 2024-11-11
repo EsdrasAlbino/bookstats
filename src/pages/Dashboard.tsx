@@ -1,18 +1,5 @@
-import { Typography } from "@mui/material";
-import { useEffect, useState } from "react";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Legend,
-  Line,
-  LineChart,
-  Tooltip,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-} from "recharts";
-import "../styles/Dashboard.css";
+import { DashboardTemplate } from "../components/templates/dashboard/DashboardTemplate";
+import { Book } from "../services/books/books";
 
 interface DashboardProps {
   genreData: { genre: string; reviews: number }[];
@@ -20,58 +7,57 @@ interface DashboardProps {
 }
 
 export const Dashboard = ({ genreData, reviewTrendData }: DashboardProps) => {
-  const [show, setShow] = useState(false);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setShow(true);
-    }, 1000);
-  }, [genreData, reviewTrendData]);
-  
+  const genreAccount = (books: Book[]) => {
+    const genreCount: { [key: string]: number } = {};
+    const reviewTrend: { [key: string]: number[] } = {};
+    books.forEach((book) => {
+      const genre = book.volumeInfo.categories
+        ? book.volumeInfo.categories[0]
+        : "Unknown";
+      const averageRating = book.volumeInfo.averageRating || 0;
+      const publishedDate = book.volumeInfo.publishedDate
+        ? new Date(book.volumeInfo.publishedDate).getMonth()
+        : 0;
+
+      if (genreCount[genre]) {
+        genreCount[genre]++;
+      } else {
+        genreCount[genre] = 1;
+      }
+
+      if (reviewTrend[publishedDate]) {
+        reviewTrend[publishedDate].push(averageRating);
+      } else {
+        reviewTrend[publishedDate] = [averageRating];
+      }
+    });
+
+    const genreDataArray = Object.keys(genreCount).map((genre) => ({
+      genre,
+      reviews: genreCount[genre],
+    }));
+
+    return { genreDataArray, reviewTrend };
+  };
+
+  const reviewTrending = (reviewTrend: { [key: string]: number[] }) => {
+    const reviewTrendDataArray = Object.keys(reviewTrend).map((month) => ({
+      month: new Date(0, parseInt(month)).toLocaleString("default", {
+        month: "short",
+      }),
+      averageReview:
+        reviewTrend[month].reduce((a, b) => a + b, 0) /
+        reviewTrend[month].length,
+    }));
+
+    return reviewTrendDataArray;
+  };
+
   return (
-    <div className="dashboard-container">
-      {!show && <Typography variant="h6">Carregando métricas...</Typography>}
-      {show && (
-        <>
-          <div className="chart-container">
-            <Typography variant="caption" className="chart-title">
-              Distribuição de Avaliações por Gênero de Livro
-            </Typography>
-            <ResponsiveContainer>
-              <BarChart
-                data={genreData}
-                margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="genre" tick={false} />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="reviews" fill="#8884d8" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="chart-container">
-            <Typography variant="caption" className="chart-title">
-              Evolução Média de Avaliações ao Longo do Tempo
-            </Typography>
-            <ResponsiveContainer>
-              <LineChart
-                data={reviewTrendData}
-                margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis domain={[0, 1, 2, 3, 4, 5]} />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="averageReview" stroke="#82ca9d" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </>
-      )}
-    </div>
+    <DashboardTemplate
+      genreData={genreData}
+      reviewTrendData={reviewTrendData}
+    />
   );
 };
