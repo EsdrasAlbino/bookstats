@@ -11,6 +11,7 @@ interface MenuBarProps {
 }
 
 export const MenuBarLocal = ({ menuOptions }: MenuBarProps) => {
+
   return (
     <Box sx={{ display: "flex", justifyContent: "center", gap: 2, margin: 2 }}>
       {menuOptions.map((option) => (

@@ -146,7 +146,6 @@ const BookList = () => {
     console.log("value", value);
     setPage(value);
   };
-
   const menuOptions: menuOptions[] = [
     {
       onPress: () => setView("list"),
